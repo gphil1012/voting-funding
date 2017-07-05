@@ -1,4 +1,5 @@
 import unittest
+import hypothesis
 
 class TestCongressTable(unittest.TestCase):
     pass
