@@ -11,6 +11,6 @@ sudo pip install -r requirements.txt
 ./setupDb.sh
 ```
 
-To run tests and generate data for the database run. 
+To run tests and generate test data for the database run. 
 
 `./runTests.sh`
