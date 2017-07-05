@@ -18,7 +18,7 @@ class TestGeneral(unittest.TestCase):
         dbIn = dbInterface.IncomingInterface(testDb)
 
     def test_Build(self):
-        print "seems to build"
+        a = "seems to build"
 
 class TestCongressTable(unittest.TestCase):
     def setUp(self):
@@ -42,31 +42,79 @@ class TestFundingTable(unittest.TestCase):
         self.inDb = dbInterface.IncomingInterface(testDb)
         self.outDb = dbInterface.OutgoingInterface(testDb)
     
-    def test_addDonation(self):
-        pass
+    @given(donation_amount=st.floats(), year=st.integers(min_value=1900, max_value=3005))
+    def test_addDonation(self, donation_amount, year):
+        conID = random.choice(self.inDb.getAllCongressMembers())['ID']
+        orgID = random.choice(self.inDb.getAllOrganizations())['ID']
+        self.inDb.addDonation(conID, orgID, donation_amount, year)
 
     def test_getAllDonations(self):
-        pass
+        assert self.inDb.getAllDonations() is not None
     
     def test_getDonationsByOrganization(self):
-        pass
+        orgID = random.choice(self.inDb.getAllOrganizations())['ID']
+        self.inDb.getDonationsByOrganizationId(orgID)
 
     def test_getDonationsByCongressId(self):
-        pass
+        conId = random.choice(self.inDb.getAllCongressMembers())['ID']
+        self.inDb.getDonationsByCongressId(conId)
     
     def test_getDonationById(self):
-        pass
+        donID = random.choice(self.inDb.getAllDonations())['ID']
+        assert self.inDb.getDonationById(donID) is not None
 
-    pass
 
 class TestVotesTable(unittest.TestCase):
-    pass
+    def setUp(self):
+        self.inDb = dbInterface.IncomingInterface(testDb)
+    
+    @given(vote=st.integers(min_value=-1, max_value=1))
+    def test_addVote(self, vote):
+        conID = random.choice(self.inDb.getAllCongressMembers())['ID']
+        billID = random.choice(self.inDb.getAllBills())['ID']
+        self.inDb.addVote(conID, billID, vote)    
+
+    def test_getVotesByCongress(self):
+        conID = random.choice(self.inDb.getAllCongressMembers())['ID']
+        self.inDb.getVotesByCongressId(conID)
+    
+    def test_getVotesByBill(self):
+        billID = random.choice(self.inDb.getAllBills())['ID']
+        self.inDb.getVotesByBillId(billID)
+
+    def test_getAllVotes(self):
+        assert self.inDb.getAllVotes() is not None
 
 class TestBillsTable(unittest.TestCase):
-    pass
+    def setUp(self):
+        self.inDb = dbInterface.IncomingInterface(testDb)
+    
+    @given(name=st.text(), hyperlink=st.text(), year=st.integers(min_value=1900, max_value=3005))
+    def test_addBill(self, name, hyperlink, year):
+        self.inDb.addBill(name, hyperlink, year)
+
+    def test_getAllBills(self):
+        self.inDb.getAllBills()
+
+    def test_getBillById(self):
+        billID = random.choice(self.inDb.getAllBills())['ID']
+        assert self.inDb.getBillByID(billID) is not None
 
 class TestOrganizationsTable(unittest.TestCase):
-    pass
+    def setUp(self):
+        self.inDb = dbInterface.IncomingInterface(testDb)
+        self.outDb = dbInterface.OutgoingInterface(testDb)
+
+    @given(name=st.text())
+    def test_addOrganization(self, name):
+        self.inDb.addOrganization(name)
+    
+    def test_getAllOrganizations(self):
+        assert self.inDb.getAllOrganizations() is not None
+
+    def test_getOrganizationById(self):
+        orgID = random.choice(self.inDb.getAllOrganizations())['ID']
+        assert self.inDb.getOrganizationById(orgID) is not None
 
 if __name__ == '__main__':
     unittest.main()

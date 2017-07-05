@@ -16,6 +16,7 @@ class OutgoingInterface(object):
     in order to generate the data to be used
     by the front end to display information to the user
     """
+    # TODO these gets can be abstracted quite a bit
     def __init__(self, dbFilename, dbDriver=sqlite3):
         self.dbFilename = dbFilename
         self.dbDriver = dbDriver
@@ -54,28 +55,81 @@ class OutgoingInterface(object):
         return value
     
     def getAllDonations(self):
-        pass
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from funding")
+        value = cur.fetchall()
+        self.closeConnection(c)
+        return value
 
-    def getDonationById(self, seachID):
-        pass
+    def getDonationById(self, searchID):
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from funding where ID=?", (searchID,))
+        value = cur.fetchone()
+        self.closeConnection(c)
+        return value
 
     def getDonationsByCongressId(self, searchID):
-        pass
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from funding where congress_ID=?", (searchID,))
+        value = cur.fetchone()
+        self.closeConnection(c)
+        return value
     
     def getDonationsByOrganizationId(self, searchID):
-        pass
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from funding where organization_ID=?", (searchID,))
+        value = cur.fetchone()
+        self.closeConnection(c)
+        return value
 
     def getVotesByCongressId(self, searchID):
-        pass
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from votes where congress_ID=?", (searchID,))
+        value = cur.fetchone()
+        self.closeConnection(c)
+        return value
 
     def getVotesByBillId(self, searchID):
-        pass
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from votes where bill_ID=?", (searchID,))
+        value = cur.fetchone()
+        self.closeConnection(c)
+        return value
     
+    def getAllVotes(self):
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from votes")
+        value = cur.fetchall()
+        self.closeConnection(c)
+        return value
+
     def getAllBills(self):
-        pass
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from bills")
+        value = cur.fetchall()
+        self.closeConnection(c)
+        return value
     
     def getBillByID(self, searchID):
-        pass
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from bills where ID=?", (searchID,))
+        value = cur.fetchone()
+        self.closeConnection(c)
+        return value
+    
+    def getAllOrganizations(self):
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from organizations")
+        value = cur.fetchall()
+        self.closeConnection(c)
+        return value
+
+    def getOrganizationById(self, searchID):
+        c = self.openConnection()
+        cur = c.cursor().execute("select * from organizations where ID=?", (searchID,))
+        value = cur.fetchone()
+        self.closeConnection(c)
+        return value
 
 class IncomingInterface(OutgoingInterface):
     """
@@ -109,11 +163,17 @@ class IncomingInterface(OutgoingInterface):
         c.cursor().execute("INSERT INTO funding (congress_ID, organization_ID, donation_amount, year) VALUES (?,?,?,?)", (congress_ID, org_ID, donation_amount, year))
         self.closeConnection(c)
 
-    def addOrganization(self):
-        pass
+    def addOrganization(self, orgName):
+        c = self.openConnection()
+        c.cursor().execute("INSERT INTO organizations (name) VALUES (?)", (orgName,))
+        self.closeConnection(c)
 
-    def addBill(self):
-        pass
+    def addBill(self, billName, hyperlink, year):
+        c = self.openConnection()
+        c.cursor().execute("INSERT INTO bills (name, hyperlink, year) VALUES (?, ?, ?)", (billName, hyperlink, year))
+        self.closeConnection(c)
     
-    def addVote(self):
-        pass
+    def addVote(self, conID, billID, vote):
+        c = self.openConnection()
+        c.cursor().execute("INSERT INTO votes (congress_ID, bill_ID, vote) VALUES (?, ?, ?)", (conID, billID, vote))
+        self.closeConnection(c)
