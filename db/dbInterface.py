@@ -71,28 +71,28 @@ class OutgoingInterface(object):
     def getDonationsByCongressId(self, searchID):
         c = self.openConnection()
         cur = c.cursor().execute("select * from funding where congress_ID=?", (searchID,))
-        value = cur.fetchone()
+        value = cur.fetchall()
         self.closeConnection(c)
         return value
     
     def getDonationsByOrganizationId(self, searchID):
         c = self.openConnection()
         cur = c.cursor().execute("select * from funding where organization_ID=?", (searchID,))
-        value = cur.fetchone()
+        value = cur.fetchall()
         self.closeConnection(c)
         return value
 
     def getVotesByCongressId(self, searchID):
         c = self.openConnection()
         cur = c.cursor().execute("select * from votes where congress_ID=?", (searchID,))
-        value = cur.fetchone()
+        value = cur.fetchall()
         self.closeConnection(c)
         return value
 
     def getVotesByBillId(self, searchID):
         c = self.openConnection()
         cur = c.cursor().execute("select * from votes where bill_ID=?", (searchID,))
-        value = cur.fetchone()
+        value = cur.fetchall()
         self.closeConnection(c)
         return value
     

@@ -25,7 +25,7 @@ class TestCongressTable(unittest.TestCase):
         self.inDb = dbInterface.IncomingInterface(testDb)
         self.outDb = dbInterface.OutgoingInterface(testDb)
     
-    @given(name=st.text(), houseRep=st.booleans(), email=st.text())
+    @given(name=st.text(st.characters(min_codepoint=1, max_codepoint=1000)), houseRep=st.booleans(), email=st.text(st.characters(min_codepoint=1, max_codepoint=1000)))
     def test_addingCongressMember(self, name, houseRep, email):
         dob = date(1969, 6, 9).strftime("%x")
         self.inDb.addCongressMember(name, name, houseRep, dob, email)
@@ -89,7 +89,7 @@ class TestBillsTable(unittest.TestCase):
     def setUp(self):
         self.inDb = dbInterface.IncomingInterface(testDb)
     
-    @given(name=st.text(), hyperlink=st.text(), year=st.integers(min_value=1900, max_value=3005))
+    @given(name=st.text(st.characters(min_codepoint=1, max_codepoint=1000)), hyperlink=st.text(st.characters(min_codepoint=1, max_codepoint=1000)), year=st.integers(min_value=1900, max_value=3005))
     def test_addBill(self, name, hyperlink, year):
         self.inDb.addBill(name, hyperlink, year)
 
@@ -105,7 +105,7 @@ class TestOrganizationsTable(unittest.TestCase):
         self.inDb = dbInterface.IncomingInterface(testDb)
         self.outDb = dbInterface.OutgoingInterface(testDb)
 
-    @given(name=st.text())
+    @given(name=st.text(st.characters(min_codepoint=1, max_codepoint=1000)))
     def test_addOrganization(self, name):
         self.inDb.addOrganization(name)
     
