@@ -1,0 +1,3 @@
+tests/.hypothesis/*
+*.pyc
+*.db
